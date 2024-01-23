@@ -25,7 +25,7 @@ public class Sequence {
 
             }
             temp = elements[0];
-            for(int z=0; z< elements.length-1; z++){
+            for(int z=0; i< elements.length-1; i++){
                 elements[z] = elements[z+1];
             }
             elements[elements.length-1] = temp;
