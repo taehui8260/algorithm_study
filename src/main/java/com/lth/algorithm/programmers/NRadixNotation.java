@@ -29,7 +29,6 @@ public class NRadixNotation {
         //System.out.println("### gamerPedigree : " + gamerPedigree);
         return String.valueOf(answer);
     }
-
     static String changeNRadixNotation(int decimal, int n){
         StringBuilder nRadixNotation = new StringBuilder();
         String remainder = "";
