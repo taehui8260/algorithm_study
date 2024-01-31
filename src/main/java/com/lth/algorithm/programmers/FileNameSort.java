@@ -9,12 +9,9 @@ public class FileNameSort {
     //숫자를 기준으로 나오기 전 까지를 Head, 숫자를 Number, 뒤를 Tail 로 구분
     public static String[] solution(String[] files) {
         FileInfo[] fileInfos = new FileInfo[files.length];
-        System.out.println(files.length);
-
+        String[] answer = new String [files.length];
         for(int i=0; i< files.length; i++){
             fileInfos[i] = new FileInfo(files[i]);
-            System.out.println();
-
         }
 
         Arrays.sort(fileInfos, (o1, o2) -> {
@@ -27,7 +24,11 @@ public class FileNameSort {
                 return headCompare;
             }
         });
-        return files;
+
+        for(int i=0; i< files.length; i++){
+            answer[i] = fileInfos[i].fileFullName;
+        }
+        return answer;
     }
     static class FileInfo{
         String fileFullName;
@@ -39,7 +40,8 @@ public class FileNameSort {
 
         FileInfo(String fileFullName){
             this.fileFullName = fileFullName;
-            this.
+            this.head = setHead(fileFullName);
+            this.num = setNum(fileFullName);
         }
         String setHead(String fileFullName){
             for(int i=0; i<fileFullName.length(); i++){
