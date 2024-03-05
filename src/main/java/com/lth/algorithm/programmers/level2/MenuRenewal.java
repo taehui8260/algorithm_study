@@ -10,53 +10,61 @@ public class MenuRenewal {
     public static void main(String[] args) {
         System.out.println(Arrays.toString(solution(new String[]{"ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"}, new int[]{2, 3, 4})));
     }
-    //모든 요리에 대해 course로 받은 숫자에 대해 2이상의 부분 집합을 만든 후 중복이 있을 경우 value 1 하기
-    //해당 내용중 value가 2 이상인 것들을 사전 오름차순으로 정렬하여 result
+
+    //주문 메뉴 오름차순 정렬
+    //DFS를 이용 모든 코스 크기에 따른 모든 경우의 수 map 할당 최대 값 저장
+    //최대값에 해당하는 코드를 answer에 추가
+    //answer 사전순으로 정렬
     static public String[] solution(String[] orders, int[] course) {
-        String[] answer = {};
         List<String> corseList = new ArrayList<>();
         Map<String, Integer> menuCntDic = new HashMap<>();
+        int courseForMaxSize = 0;
 
-        for(int courseSize : course){
-            for(String order: orders){
-                DFSCourse(order, 0, courseSize, 0, new boolean[order.length()], menuCntDic);
-                System.out.println(menuCntDic);
+        //주문 메뉴 오름차순 정렬
 
+        for(int i=0; i<orders.length; i++){
+            char[] charArray = orders[i].toCharArray();
+            System.out.println(charArray);
+            Arrays.sort(charArray);
+            orders[i] =  new String(charArray);
+
+        }
+
+        //주문 별 코스 사이즈에 해당하는 모든 조합 구하기
+        for (int courseSize : course) {
+            for (String order : orders) {
+                DFSCourse(0, order, menuCntDic,"", courseSize);
             }
         }
+
+        //코스 사이즈 별 최대 개수 구하기
+        for (int courseSize : course) {
+            courseForMaxSize = 0;
+              for(String key: menuCntDic.keySet()){
+                  if(key.length() == courseSize){
+                      courseForMaxSize = courseForMaxSize > menuCntDic.get(key) ? courseForMaxSize : menuCntDic.get(key);
+                  }
+              }
+            for(String key: menuCntDic.keySet()){
+                if(key.length() == courseSize && courseForMaxSize >1 &&menuCntDic.get(key) == courseForMaxSize){
+                    corseList.add(key);
+                }
+            }
+        }
+        corseList.sort(String::compareTo);
 
         //System.out.println(menuCntDic);
         String temp = "";
 
-        return answer;
+        return corseList.toArray(new String[0]);
     }
-    static void DFSCourse(String order, int startNum, int courseSize, int nowCourseSize, boolean []checkInputMenu, Map<String, Integer> menuCntDic){
-        checkInputMenu[startNum] = true;
-        nowCourseSize++;
-        StringBuilder temp = new StringBuilder();
-        if(courseSize == nowCourseSize) {
-            System.out.println("### courseSize : " + courseSize);
-            System.out.println("### nowCourseSize : " + nowCourseSize);
-            for (int i = 0; i < order.length(); i++) {
-                if (checkInputMenu[i]) {
-                    temp.append(order.charAt(i));
-                }
-            }
-            System.out.println("### checkInputMenu : " + Arrays.toString(checkInputMenu));
 
-            System.out.println("### temp : " + temp);
-
-            menuCntDic.merge(String.valueOf(temp), 1, Integer::sum);
-
-
-            return;
+    static void DFSCourse(int startIndex, String order, Map<String, Integer> menuCntDic, String course, int courseSize) {
+        if (!"".equals(course) && course.length() == courseSize) {
+            menuCntDic.merge(course, 1, Integer::sum);
         }
-        if(++startNum < order.length()) {
-            if(nowCourseSize < courseSize)
-                DFSCourse(order, startNum, courseSize, nowCourseSize, checkInputMenu, menuCntDic);
-            checkInputMenu[startNum] = false;
-            if(--nowCourseSize < courseSize)
-                DFSCourse(order, startNum, courseSize, nowCourseSize, checkInputMenu, menuCntDic);
-            }
+        for (int i = startIndex; i < order.length(); i++) {
+            DFSCourse(i+1, order, menuCntDic, course + order.charAt(i), courseSize );
         }
     }
+}
