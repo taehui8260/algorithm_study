@@ -33,4 +33,20 @@ public class Common {
             }
         }
     }
+
+    /**
+     * 00:00 형식의 시간을 분으로 변환
+     *
+     * @param time
+     * @return
+     */
+    int changeMinute(String time){
+        int minute;
+
+        String [] timeAry = new String[2];
+        timeAry = time.split(":");
+        minute = Integer.parseInt(timeAry[0]) * 60;
+        minute += Integer.parseInt(timeAry[1]);
+        return minute;
+    }
 }
