@@ -30,30 +30,40 @@ public class MaliciousUser {
             }
             maliciousUserMap.add(j, bannedList);
         }
-        System.out.println(maliciousUserMap);
-        return answer;
+        backTracking(maliciousUserMap, checkUserId, 0, new ArrayDeque<>());
+        return resultSet.size();
     }
 
-    private boolean findMakingUserId(String maskingId, String userId){
-        if(maskingId.length() != userId.length())
-            return false;
+    //마스킹 처리된 아이디와 같은 아이디 인댁스 찾기
+    private boolean findMakingUserId(String bannedId, String userId){
+        if (bannedId.length() != userId.length()) return false;
 
-        List<Integer> starIndex = new ArrayList<>();
-        for(int i=0; i<maskingId.length(); i++){
-            if(maskingId.charAt(i) == '*'){
-                starIndex.add(i);
-            }
+        for (int i = 0; i < bannedId.length(); i++) {
+            if (bannedId.charAt(i) == '*') continue;
+            if (bannedId.charAt(i) != userId.charAt(i)) return false;
         }
-        for(int index : starIndex){
-            if(index < maskingId.length())
-                userId = userId.substring(0,index) + "*" + userId.substring(index+1);
-            else{
-                userId = userId.substring(0,index) + "*";
-            }
-        }
-
-        return maskingId.equals(userId);
+        return true;
     }
 
-    private backTracking(List<List<Integer>> maliciousUserMap, )
+    //마스킹 처리된 아이디와 매핑되어있는 아이디의 조합 확인
+    private void backTracking(List<List<Integer>> maliciousUserMap,boolean[] checkUserId, int index, ArrayDeque<Integer> combination){
+        if(index == maliciousUserMap.size()){
+            List<Integer> result = new ArrayList<>(combination);
+            result.sort((o1, o2) -> o1-o2);
+            resultSet.add(result.toString());
+            return;
+        }
+        for(int i=0; i<maliciousUserMap.get(index).size(); i++){
+            if(!checkUserId[maliciousUserMap.get(index).get(i)]){
+                checkUserId[maliciousUserMap.get(index).get(i)] = true;
+                combination.push(maliciousUserMap.get(index).get(i));
+                backTracking(maliciousUserMap, checkUserId, ++index, combination);
+                combination.pop();
+
+                checkUserId[maliciousUserMap.get(--index).get(i)] = false;
+                System.out.println();
+
+            }
+        }
+    }
 }
