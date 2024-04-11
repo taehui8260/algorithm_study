@@ -1,9 +1,6 @@
 package com.programmers.level3;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * 배달
@@ -13,54 +10,46 @@ import java.util.Queue;
 public class Delivery {
     public static void main(String[] args) {
         Delivery delivery = new Delivery();
-        System.out.println(delivery.solution(5, new int[][]{{1, 2, 1}, {2, 3, 3}, {5, 2, 2}, {1, 4, 2}, {5, 3, 1}, {5, 4, 2}}, 3));
+        System.out.println(delivery.solution(6, new int[][]{{1, 2, 1}, {1, 3, 2}, {2, 3, 2}, {3, 4, 3}, {3, 5, 2}, {3, 5, 3}, {5, 6, 1}}, 4));
     }
     public int solution(int N, int[][] road, int K) {
+        Map<Integer, List<int[]>> roadMap = new HashMap<>();
+        for (int[] r : road) {
+            roadMap.putIfAbsent(r[0], new ArrayList<>());
+            roadMap.putIfAbsent(r[1], new ArrayList<>());
+            roadMap.get(r[0]).add(new int[]{r[1], r[2]});
+            roadMap.get(r[1]).add(new int[]{r[0], r[2]});
+        }
+
+        int[] dist = new int[N + 1];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[1] = 0;
+
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{1, 0});
+
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int currentTown = current[0];
+            int currentDist = current[1];
+
+            if (!roadMap.containsKey(currentTown)) continue;
+
+            for (int[] next : roadMap.get(currentTown)) {
+                int nextTown = next[0];
+                int nextDist = next[1];
+
+                if (dist[nextTown] > currentDist + nextDist) {
+                    dist[nextTown] = currentDist + nextDist;
+                    queue.offer(new int[]{nextTown, dist[nextTown]});
+                }
+            }
+        }
+
         int answer = 0;
-        boolean [] roadFlg = new boolean[K];
-        int [] roadCnt = new int[K];
-        Queue<Map<Integer, Integer>> roadQueue = new LinkedList<>();
-        Map<Integer, Map<Integer, Integer>> roadMap = new HashMap<>();
-        for(int [] item: road){
-            Map<Integer, Integer> map1 = new HashMap<>();
-            Map<Integer, Integer> map2 = new HashMap<>();
-            map1.put(item[1], item[2]);
-            if(roadMap.get(item[0]) == null){
-                roadMap.put(item[0], map1);
-            } else {
-                if(roadMap.get(item[0]).get(item[1]) == null){
-                    roadMap.get(item[0]).put(item[1],item[2]);
-                } else{
-                    roadMap.get(item[0]).put(item[1], Math.max(item[2], roadMap.get(item[0]).get(item[1])));
-                }
-            }
-            map2.put(item[0], item[2]);
-            if(roadMap.get(item[1]) == null){
-                roadMap.put(item[1], map2);
-            } else {
-                if(roadMap.get(item[1]).get(item[0]) == null){
-                    roadMap.get(item[1]).put(item[0],item[2]);
-                } else{
-                    roadMap.get(item[1]).put(item[0], Math.max(item[2], roadMap.get(item[1]).get(item[0])));
-                }
-            }
+        for (int i = 1; i <= N; i++) {
+            if (dist[i] <= K) answer++;
         }
-        roadQueue.add(roadMap.get(1));
-        roadFlg[0] = true;
-        while(roadQueue.peek() != null){
-            Map<Integer, Integer> data = roadQueue.poll();
-            roadFlg[0] = true;
-            for(Integer key: data.keySet()){
-                if(!roadFlg[key-1]) {
-                    for(Integer key2: roadMap.get(key).keySet()){
-                        roadMap.get(key).put(key2, roadMap.get(key).get(key2) + data.get(key));
-                    }
-                    roadQueue.add(roadMap.get(key));
-                }
-            }
-        }
-        // [실행] 버튼을 누르면 출력 값을 볼 수 있습니다.
-        System.out.println(roadMap);
 
         return answer;
     }
