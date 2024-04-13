@@ -53,4 +53,70 @@ public class Delivery {
 
         return answer;
     }
+   /* public int solution(int N, int[][] road, int K) {
+        int answer = 0;
+        boolean [] roadFlg = new boolean[N];
+        int [] roadCnt = new int[N];
+        Queue<Map<Integer, Integer>> roadQueue = new LinkedList<>();
+        Map<Integer, Map<Integer, Integer>> roadMap = new HashMap<>();
+        for(int [] item: road){
+            Map<Integer, Integer> map1 = new HashMap<>();
+            Map<Integer, Integer> map2 = new HashMap<>();
+            map1.put(item[1], item[2]);
+            if(roadMap.get(item[0]) == null){
+                roadMap.put(item[0], map1);
+            } else {
+                if(roadMap.get(item[0]).get(item[1]) == null){
+                    roadMap.get(item[0]).put(item[1],item[2]);
+                } else{
+                    roadMap.get(item[0]).put(item[1], Math.min(item[2], roadMap.get(item[0]).get(item[1])));
+                }
+            }
+            map2.put(item[0], item[2]);
+            if(roadMap.get(item[1]) == null){
+                roadMap.put(item[1], map2);
+            } else {
+                if(roadMap.get(item[1]).get(item[0]) == null){
+                    roadMap.get(item[1]).put(item[0],item[2]);
+                } else{
+                    roadMap.get(item[1]).put(item[0], Math.min(item[2], roadMap.get(item[1]).get(item[0])));
+                }
+            }
+        }
+        roadFlg[0] = true;
+
+        for(Integer key : roadMap.get(1).keySet()){
+            Map<Integer, Integer> map = new HashMap<>();
+            map.put(key, roadMap.get(1).get(key));
+            roadCnt[key-1] = roadMap.get(1).get(key);
+            roadFlg[key-1] = true;
+            roadQueue.add(map);
+        }
+
+        while(roadQueue.peek() != null){
+            Map<Integer, Integer> data = roadQueue.poll();
+
+            for(Integer key: data.keySet()){
+                for(Integer key2: roadMap.get(key).keySet()){
+                    if(!roadFlg[key2-1]){
+                        Map<Integer, Integer> map = new HashMap<>();
+                        map.put(key2, data.get(key) + roadMap.get(key).get(key2));
+                        roadQueue.add(roadMap.get(key));
+                        roadCnt[key2-1] = map.get(key2);
+                        roadFlg[key2-1] = true;
+                    }
+                }
+            }
+            System.out.println(roadMap);
+
+        }
+        // [실행] 버튼을 누르면 출력 값을 볼 수 있습니다.
+        System.out.println(roadMap);
+        System.out.println(roadQueue);
+        System.out.println(Arrays.toString(roadCnt));
+        for(int cnt : roadCnt){
+            if(cnt <= K) answer++;
+        }
+        return answer;
+    }*/
 }
