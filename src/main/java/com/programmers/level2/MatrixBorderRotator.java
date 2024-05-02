@@ -15,10 +15,9 @@ public class MatrixBorderRotator {
         int[] answer = new int[queries.length];
         Deque<Integer> deque = new ArrayDeque<>();
         int [][] matrix = new int[rows][columns];
-        for(int i=0; i<matrix.length; i++){
-            for(int j=0; j<matrix[i].length; j++){
-                matrix[i][j] = (j+1)  + (matrix.length * i);
-                System.out.print((j+1)  + (matrix.length * i) + " ");
+        for(int i=0; i<rows; i++){
+            for(int j=0; j<columns; j++){
+                matrix[i][j] = (j+1)  + (columns * i);
             }
         }
         int index = 0;
