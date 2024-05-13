@@ -23,13 +23,17 @@ public class TripRoute {
             ticketMap.get(ticket[0]).add(ticket[1]);
         }
         String nation = "ICN";
-        while(true){
-            answerList.add(nation);
-            if(ticketMap.get(nation)==null || ticketMap.get(nation).peek() == null){
-                break;
+        Stack<String> answerStack = new Stack<>();
+        answerStack.push("ICN");
+        while(!answerStack.isEmpty()){
+            String nowNation = answerStack.peek();
+            if(ticketMap.get(nowNation)==null || ticketMap.get(nowNation).peek() == null){
+                answerList.add(answerStack.pop());
+            } else{
+                answerStack.push(ticketMap.get(nowNation).poll());
             }
-            nation = ticketMap.get(nation).poll();
         }
+        Collections.reverse(answerList);
         return answerList.toArray(new String[0]);
     }
 }
