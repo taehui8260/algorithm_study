@@ -13,18 +13,17 @@ public class IslandConnector {
     }
     public int solution(int n, int[][] costs) {
         int answer = 0;
-        Map<Integer, List <int[]>> lineMap= new HashMap<>();
+        Map<Integer, Map<Integer, Integer>> lineMap= new HashMap<>();
         int [] minCostForLine = new int [n];
         Arrays.fill(minCostForLine, Integer.MAX_VALUE);
         boolean [] lineCheck = new boolean [n];
 
         for(int[] cost: costs){
-            lineMap.putIfAbsent(cost[0], new ArrayList<>());
-            lineMap.putIfAbsent(cost[1], new ArrayList<>());
-            if(cost[0] <= cost[1])
-                lineMap.get(cost[0]).add(new int[]{cost[1], cost[2]});
-            if(cost[1] <= cost[0])
-                lineMap.get(cost[1]).add(new int[]{cost[0], cost[2]});
+            lineMap.putIfAbsent(cost[0], new HashMap<>());
+            lineMap.putIfAbsent(cost[1], new HashMap<>());
+
+            lineMap.get(cost[0]).put(cost[1], cost[2]);
+            lineMap.get(cost[1]).put(cost[0], cost[2]);
         }
         for(int i=0; i<n; i++){
             int finalI = i;
