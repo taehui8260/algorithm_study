@@ -27,6 +27,9 @@ public class IslandConnector {
         }
         for(int i=0; i<n; i++){
             int finalI = i;
+            for(int key : lineMap.get(i).keySet()){
+
+            }
             lineMap.get(i).forEach(ints -> {
                 System.out.println(finalI + " :"+ Arrays.toString(ints));
 
