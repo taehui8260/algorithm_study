@@ -18,7 +18,6 @@ public class IslandConnector {
         });
         for(int[] cost : costs){
             System.out.println(Arrays.toString(cost));
-
         }
         boolean [] checkVisit = new boolean[n];
 
