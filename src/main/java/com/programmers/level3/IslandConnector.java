@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * 섬 연결하기
- * 0 : {1/1, 2/2}, 1 : {2/5, 3/1}, 2:{3/8}, 3
+ * cost를 기준으로 정렬 후 파인트 유니온 알고리즘을 통해 전체 노드를 연결하는 cost의 합을 구한다
  */
 public class IslandConnector {
     public static void main(String[] args) {
@@ -13,36 +13,20 @@ public class IslandConnector {
     }
     public int solution(int n, int[][] costs) {
         int answer = 0;
-        Map<Integer, Map<Integer, Integer>> lineMap= new HashMap<>();
-        int [] minCostForLine = new int [n];
-        Arrays.fill(minCostForLine, Integer.MAX_VALUE);
-        boolean [] lineCheck = new boolean [n];
+        Arrays.sort(costs, (a, b) ->{
+           return a[2] - b[2];
+        });
+        for(int[] cost : costs){
+            System.out.println(Arrays.toString(cost));
 
-        for(int[] cost: costs){
-            lineMap.putIfAbsent(cost[0], new HashMap<>());
-            lineMap.putIfAbsent(cost[1], new HashMap<>());
-
-            lineMap.get(cost[0]).put(cost[1], cost[2]);
-            lineMap.get(cost[1]).put(cost[0], cost[2]);
         }
-        for(int i=0; i<n; i++){
-            int finalI = i;
-            for(int key : lineMap.get(i).keySet()){
+        boolean [] checkVisit = new boolean[n];
 
-            }
-            lineMap.get(i).forEach(ints -> {
-                System.out.println(finalI + " :"+ Arrays.toString(ints));
-
-                if(minCostForLine[ints[0]] > ints[1]){
-                    minCostForLine[ints[0]] = ints[1];
-                }
-            });
-        }
-        System.out.println(lineMap);
-        System.out.println(Arrays.toString(minCostForLine));
-        for(int result: minCostForLine){
-            if(result != Integer.MAX_VALUE){
-                answer+= result;
+        for(int[] cost : costs){
+            if(!checkVisit[cost[0]] || !checkVisit[cost[1]]){
+                answer += cost[2];
+                checkVisit[cost[0]] = true;
+                checkVisit[cost[1]] = true;
             }
         }
         return answer;
