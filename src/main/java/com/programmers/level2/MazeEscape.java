@@ -14,7 +14,6 @@ import java.util.Queue;
  */
 public class MazeEscape {
     public int solution(String[] maps) {
-        int answer = -1;
         int [] startCoordinate = new int[2];
         int [] leverCoordinate = new int[2];
         String [][] mapAry = new String [maps.length][maps[0].length()];
@@ -32,50 +31,49 @@ public class MazeEscape {
             }
         }
         //레버 찾기
-        Deque<CoordinateValue> deque = new ArrayDeque<>();
-        deque.addLast(new CoordinateValue(startCoordinate[0], startCoordinate[1], 0));
-        answer = bfs(mapAry, deque, "L");
+
+        int answer = bfs(mapAry, startCoordinate, "L");
         if(answer == -1){
             return answer;
         }
-
-        deque.clear();
-        //도착 찾기
-        deque.addLast(new CoordinateValue(leverCoordinate[0], leverCoordinate[1], 0));
-        answer += bfs(mapAry, deque, "E");
-
-        return answer;
+        int answer2 = bfs(mapAry, leverCoordinate, "E");
+        if(answer2 == -1){
+            return answer2;
+        }
+        return answer + answer2;
     }
 
     //길을 찾기 위한 bfs
-    private int bfs(String [][] mapAry, Deque<CoordinateValue> deque, String findLocation){
+    private int bfs(String [][] mapAry, int [] coordinate, String findLocation){
         int result  = -1;
         boolean[][] check = new boolean[mapAry.length][mapAry[0].length];
+        Deque<CoordinateValue> deque = new ArrayDeque<>();
+        deque.addLast(new CoordinateValue(coordinate[0], coordinate[1], 0));
+        check[coordinate[0]][coordinate[1]] = true;
+        int []rowMove = {0, 0, 1, -1};
+        int []colMove = {1, -1, 0, 0};
 
-        while(deque.peek() != null){
+        while(!deque.isEmpty()){
             CoordinateValue coordinateValue = deque.pollFirst();
             int row = coordinateValue.row;
             int column = coordinateValue.column;
             int value = coordinateValue.value;
-            check[row][column] = true;
             if(mapAry[row][column].equals(findLocation)){
-                result = value;
-                break;
+                return value;
             }
-            if((mapAry[0].length -1 > column) && !check[row][column + 1] && !mapAry[row][column + 1].equals("X")){
-                deque.addLast(new CoordinateValue(row, column + 1, value + 1));
-            }
-            if(0 < column && !check[row][column - 1] && !mapAry[row][column - 1].equals("X")){
-                deque.addLast(new CoordinateValue(row, column - 1, value + 1));
-            }
-            if(mapAry.length -1 > row && !check[row + 1][column] && !mapAry[row + 1][column].equals("X")){
-                deque.addLast(new CoordinateValue(row + 1, column, value + 1));
-            }
-            if( 0 < row && !check[row - 1][column] && !mapAry[row - 1][column].equals("X")){
-                deque.addLast(new CoordinateValue(row - 1, column, value + 1));
+            for(int i=0; i<4; i++){
+                int newRow = row + rowMove[i];
+                int newCol = column + colMove[i];
+                if(validation(newRow, newCol, mapAry, check)){
+                    deque.addLast(new CoordinateValue(newRow, newCol, value + 1));
+                    check[newRow][newCol] = true;
+                }
             }
         }
         return result;
+    }
+    private boolean validation(int row, int col, String [][] mapAry, boolean[][] check){
+        return row >= 0 && row < mapAry.length && col >= 0 && col < mapAry[0].length && !check[row][col] && !mapAry[row][col].equals("X");
     }
     class CoordinateValue {
         int row;
