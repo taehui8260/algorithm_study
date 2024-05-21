@@ -32,33 +32,18 @@ public class DistanceMonitor {
         for(int row=0; row<place.length; row++){
             for(int column=0; column<place[row].length; column++){
                 for(int i=0; i<4; i++){
-                    if(!validation(place, row + check_1[0][i], column + check_1[1][i])){
+                    if(validation(place, row + check_1[0][i], column + check_1[1][i])){
                         return 0;
                     }
-                    if(!validation(place, row + check_2[0][i], column + check_2[1][i])){
+                    if(validation(place, row + check_2[0][i], column + check_2[1][i])){
                         if(!place[row + check_2[0][i]][column].equals("X") || !place[row][column + check_2[1][i]].equals("X"))
                             return 0;
                     }
                     if(!validation(place, row + check_3[0][i], column + check_3[1][i])){
-                        if(i == 0){
-                            if(!place[row -1][column].equals("X")){
-                                return 0;
-                            }
-                        } else if (i==1) {
-                            if(!place[row +1][column].equals("X")){
-                                return 0;
-                            }
-                        } else if(i==2){
-                            if(!place[row][column -1].equals("X")){
-                                return 0;
-                            }
-                        } else {
-                            if(!place[row][column +1].equals("X")){
-                                return 0;
-                            }
+                        if(!place[row + check_3[0][i] - check_1[0][i]][column + check_3[1][i] - check_1[1][i]].equals("X")){
+                            return 0;
                         }
                     }
-
                 }
             }
         }
@@ -66,8 +51,8 @@ public class DistanceMonitor {
     }
     private boolean validation(String [][] place, int row, int column){
         if(row >= 0 && column >=0 && row < 5 && column < 5){
-            return !place[row][column].equals("P");
+            return place[row][column].equals("P");
         }
-        return true;
+        return false;
     }
 }
