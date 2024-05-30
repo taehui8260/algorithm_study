@@ -16,6 +16,8 @@ public class RicochetRobot {
         boolean [][] visited = new boolean[rowSize][colSize];
         int[] start = new int[2];
         int[] goal = new int[2];
+        int[] rowDirection = {0, 0, -1, 1};
+        int[] colDirection = {-1, 1, 0, 0};
         for(int i=0; i<rowSize; i++){
             for(int j=0; j<colSize; j++){
                 char cell = board[i].charAt(j);
@@ -32,7 +34,19 @@ public class RicochetRobot {
         visited[start[0]][start[1]] = true;
 
         while(!queue.isEmpty()){
+            int[] current = queue.poll();
+            int row = current[0];
+            int col = current[1];
+            int count = current[2];
 
+            if(board[row].charAt(col) == 'G'){
+                return count;
+            }
+            for(int i=0; i<4; i++){
+                if(0<= row + rowDirection[i] && row + rowDirection[i] < rowSize )
+
+
+            }
         }
         return answer;
     }
