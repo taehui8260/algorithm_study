@@ -1,5 +1,6 @@
 package com.programmers.level2;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -9,8 +10,12 @@ import java.util.Queue;
  * bfs 이용
  */
 public class RicochetRobot {
+    public static void main(String[] args) {
+        RicochetRobot ricochetRobot = new RicochetRobot();
+        System.out.println(ricochetRobot.solution(new String[]{"...D..R", ".D.G...", "....D.D", "D....D.", "..D...."}));
+    }
     public int solution(String[] board) {
-        int answer = 0;
+        int answer = -1;
         int rowSize = board.length;
         int colSize = board[0].length();
         boolean [][] visited = new boolean[rowSize][colSize];
@@ -35,17 +40,26 @@ public class RicochetRobot {
 
         while(!queue.isEmpty()){
             int[] current = queue.poll();
-            int row = current[0];
-            int col = current[1];
             int count = current[2];
 
-            if(board[row].charAt(col) == 'G'){
+            if(board[current[0]].charAt(current[1]) == 'G'){
                 return count;
             }
             for(int i=0; i<4; i++){
-                if(0<= row + rowDirection[i] && row + rowDirection[i] < rowSize )
-
-
+                int row = current[0];
+                int col = current[1];
+                while(true) {
+                    if (0 <= row + rowDirection[i] && row + rowDirection[i] < rowSize && 0 <= col + colDirection[i] && col + colDirection[i] < colSize && board[row + rowDirection[i]].charAt(col + colDirection[i]) != 'D') {
+                        row = row + rowDirection[i];
+                        col = col + colDirection[i];
+                    } else{
+                       if(!visited[row][col]){
+                           visited[row][col] = true;
+                           queue.offer(new int[]{row, col, count+1});
+                       }
+                       break;
+                    }
+                }
             }
         }
         return answer;
