@@ -42,7 +42,8 @@ public class TrackBuilder {
             for (int j = 0; j < 4; j++) {
                 for (int i = 0; i < 4; i++) {
                     int expense = buildPay[curRow][curCol][j];
-
+                    if(expense == Integer.MAX_VALUE)
+                        continue;
                     if (0 <= curRow + rowDirection[i] && curRow + rowDirection[i] < rowSize && 0 <= curCol + colDirection[i] && curCol + colDirection[i] < colSize && 1 != board[curRow + rowDirection[i]][curCol + colDirection[i]] && curRow + rowDirection[i] + curCol + colDirection[i] != 0) {
                         if (direction == i || direction == 4) {
                             expense += 100;
