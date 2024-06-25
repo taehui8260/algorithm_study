@@ -6,6 +6,7 @@ package com.programmers.level3;
  * 수열 확인
  * 첫번째 값부터 하나씩 -1, +1을 반복하면서 최대값을 찾는다.
  *
+ *
  * 만약 0보다 작아질 경우 초기화 다음값부터 다시 부분 수열 끝까지 반복
  */
 public class SubsequenceSum {
