@@ -2,24 +2,27 @@ package com.programmers.level3;
 
 /**
  * 가장 긴 팰린드룸
+ *
+ *
+ *
  */
 public class LongestPalindrome {
     public int solution(String s) {
-        int size = 0;
-        for(int i=0; i<s.length(); i++){
-            for(int j=1; j<=size + 1; j++){
-                if(i-j > 0 && i+j < s.length()){
-                    if(s.charAt(i-j) != s.charAt(i-j)){
-                        break;
-                    }
-                    if(j == size + 1){
-                        size++;
-                    }
-                } else{
-                    break;
-                }
-            }
+        int result = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            result = Math.max(result, expandAroundCenter(s, i, i)); // 홀수 길이 회문 체크
+            result = Math.max(result, expandAroundCenter(s, i, i + 1)); // 짝수 길이 회문 체크
         }
-        return size * 2 + 1;
+
+        return result;
+    }
+
+    private int expandAroundCenter(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return right - left - 1; // 회문 길이 반환
     }
 }
