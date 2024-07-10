@@ -13,8 +13,6 @@ package com.programmers.level2;
  */
 public class NormalSquare {
     public long solution(int W, int H) {
-
-
         // 전체 정사각형의 개수
         long totalSquares = (long) W * H;
         // 대각선이 지나가는 정사각형의 개수
