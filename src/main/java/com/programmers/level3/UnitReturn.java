@@ -22,32 +22,36 @@ public class UnitReturn {
             loadMap.get(road[0]).add(road[1]);
             loadMap.get(road[1]).add(road[0]);
         }
+        int [] distances = bfs(loadMap, destination, n);
         for(int i=0; i<answer.length; i++){
-            answer[i] = bfs(loadMap, sources[i], destination, n);
+            answer[i] = distances[sources[i]];
         }
         return answer;
     }
-    private int bfs(Map<Integer, LinkedHashSet<Integer>> loadMap, int source, int destination, int n){
-        boolean [] checkLoad = new boolean[n];
+
+    private int[] bfs(Map<Integer, LinkedHashSet<Integer>> loadMap, int destination, int n){
+        boolean [] visited = new boolean[n+1];
+        int [] distances = new int[n+1];
+
+        Arrays.fill(distances, -1);
         Queue<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[]{source, 0});
-        if(loadMap.get(source) == null){
-            return -1;
-        }
+        visited[destination] = true;
+        distances[destination] = 0;
+        queue.add(new int[]{destination, 0});
+
         while(!queue.isEmpty()){
             int curLocation = queue.peek()[0];
             int curLength = queue.peek()[1];
-            if(destination == curLocation){
-                return curLength;
-            }
-            if(!checkLoad[curLocation-1]){
-                for(Integer load: loadMap.get(curLocation)){
+
+            for(Integer load: loadMap.get(curLocation)){
+                if(!visited[load]){
                     queue.offer(new int[]{load, curLength+1});
+                    distances[load] = curLength+1;
+                    visited[load] = true;
                 }
-                checkLoad[curLocation-1] = true;
             }
             queue.poll();
         }
-        return -1;
+        return distances;
     }
 }
