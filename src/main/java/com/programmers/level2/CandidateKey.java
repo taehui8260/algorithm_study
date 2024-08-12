@@ -29,7 +29,7 @@ public class CandidateKey {
         return answer[0];
     }
     private void dfs(String[][] relation, boolean[] except, int start, int curSize , int maxSize, Set<Integer> columnSet, List<Integer> indexList, int[] answer){
-        if(start >= relation.length){return;}
+        if(start >= relation[0].length){return;}
         if(!except[start]){
             if(curSize == maxSize){
                 indexList.add(start);
