@@ -1,64 +1,60 @@
 package com.programmers.level2;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  * 후보키
  */
 public class CandidateKey {
+    public static void main(String[] args) {
+        CandidateKey candidateKey = new CandidateKey();
+        System.out.print(new String[][]{{"100", "ryan", "music", "2"}, {"200", "apeach", "math", "2"}, {"300", "tube", "computer", "3"}, {"400", "con", "computer", "4"}, {"500", "muzi", "music", "3"},
+        {
+            "600", "apeach", "music", "2"
+        }});
+    }
     public int solution(String[][] relation) {
-        int answer = 0;
+        int[] answer = {0};
         int columnSize = relation.length;
         int rowSize = relation[0].length;
-        int startNum;
-        boolean[] except = new boolean[columnSize + 1];
+        boolean[] except = new boolean[columnSize];
+        Set<Integer> columnSet = new HashSet<>();
+
         for(int i=1; i<=columnSize; i++){
-            startNum = 0;
-            Set<Integer> columnSet = new HashSet<>();
-            while(true){
-
-            }
-
+            dfs(relation, except, 0, 1, i, columnSet, new ArrayList<>(), answer);
         }
-        return answer;
+        return answer[0];
     }
-    private void dfs(String[][] relation, boolean[] except, boolean[] visited, int start, int curSize ,int maxSize, Set<Integer> columnSet){
-        if(start < except.length){
-            if(!except[start]){
-                visited[start] = true;
-                if(curSize == maxSize){
-                    Set<String> rowSet = new HashSet<>();
-                    for(int j=0; j<relation.length; j++){
-                        String row = "";
-                        for(int x=0; x<relation[j].length; x++){
-                            if(visited[x]) {
-                                row = row + " " + relation[j][x];
-                            }
-                        }
-                        rowSet.add(row);
-                        if(rowSet.size() != j+1){
-                            visited[start] = false;
-                            dfs(relation, except, visited, start + 1, curSize, maxSize, columnSet);
-                        }
+    private void dfs(String[][] relation, boolean[] except, int start, int curSize , int maxSize, Set<Integer> columnSet, List<Integer> indexList, int[] answer){
+        if(start >= relation.length){return;}
+        if(!except[start]){
+            if(curSize == maxSize){
+                indexList.add(start);
+                Set<String> key = new HashSet<>();
+                for(int i=0; i<relation.length; i++){
+                    String candidateKey = "";
+                    for(Integer index: indexList) {
+                        candidateKey += relation[i][index] + " ";
                     }
-                    if(rowSet.size() == relation[0].length){
-                        for(int j=0; j<visited.length; j++){
-                            if(visited[j]){
-                                columnSet.add(j);
-                            }
-                        }
-                    }
-                    visited[start] = false;
-                    dfs(relation, except, visited, start + 1, curSize, maxSize, columnSet);
-
-                } else{
-                    dfs(relation, except, visited, start + 1, curSize + 1, maxSize, columnSet);
+                    key.add(candidateKey);
                 }
-
-                visited[start] = false;
-                dfs(relation, except, visited, start + 1, curSize, maxSize, columnSet);
+                if(key.size() == relation.length){
+                    answer[0] += 1;
+                    for(Integer index: indexList ){
+                        columnSet.add(index);
+                    }
+                }
+                indexList.remove(indexList.size()-1);
+            }
+            else{
+                indexList.add(start);
+                dfs(relation, except, start + 1, curSize + 1, maxSize, columnSet, indexList, answer);
+                indexList.remove(indexList.size() - 1);
             }
         }
+        dfs(relation, except, start + 1, curSize, maxSize, columnSet, indexList, answer);
     }
 }
