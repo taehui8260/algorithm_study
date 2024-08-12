@@ -24,9 +24,9 @@ public class CandidateKey {
         return answer;
     }
     private void dfs(String[][] relation, boolean[] except, boolean[] visited, int start, int curSize ,int maxSize, Set<Integer> columnSet){
-        for(int i=start; i<relation.length; i++){
-            if(!except[i]){
-                visited[i] = true;
+        if(start < except.length){
+            if(!except[start]){
+                visited[start] = true;
                 if(curSize == maxSize){
                     Set<String> rowSet = new HashSet<>();
                     for(int j=0; j<relation.length; j++){
@@ -38,16 +38,27 @@ public class CandidateKey {
                         }
                         rowSet.add(row);
                         if(rowSet.size() != j+1){
-                            visited[i] = false;
+                            visited[start] = false;
                             dfs(relation, except, visited, start + 1, curSize, maxSize, columnSet);
                         }
                     }
+                    if(rowSet.size() == relation[0].length){
+                        for(int j=0; j<visited.length; j++){
+                            if(visited[j]){
+                                columnSet.add(j);
+                            }
+                        }
+                    }
+                    visited[start] = false;
+                    dfs(relation, except, visited, start + 1, curSize, maxSize, columnSet);
+
                 } else{
                     dfs(relation, except, visited, start + 1, curSize + 1, maxSize, columnSet);
                 }
+
+                visited[start] = false;
+                dfs(relation, except, visited, start + 1, curSize, maxSize, columnSet);
             }
-
         }
-
     }
 }
