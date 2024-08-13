@@ -1,9 +1,7 @@
 package com.programmers.level2;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 후보키
@@ -21,10 +19,14 @@ public class CandidateKey {
         int columnSize = relation.length;
         int rowSize = relation[0].length;
         boolean[] except = new boolean[columnSize];
-        Set<Integer> columnSet = new HashSet<>();
 
         for(int i=1; i<=columnSize; i++){
+            Set<Integer> columnSet = new HashSet<>();
+
             dfs(relation, except, 0, 1, i, columnSet, new ArrayList<>(), answer);
+            for(Integer item: columnSet){
+                except[item] = true;
+            }
         }
         return answer[0];
     }
@@ -35,13 +37,15 @@ public class CandidateKey {
                 indexList.add(start);
                 Set<String> key = new HashSet<>();
                 for(int i=0; i<relation.length; i++){
-                    String candidateKey = "";
+                    List<String> candidateKey = new ArrayList<>();
                     for(Integer index: indexList) {
-                        candidateKey += relation[i][index] + " ";
+                        candidateKey.add(relation[i][index]);
                     }
-                    key.add(candidateKey);
+                    Collections.sort(candidateKey);
+                    key.add(candidateKey.stream().collect(Collectors.joining(", ")));
                 }
                 if(key.size() == relation.length){
+                    System.out.println(key);
                     answer[0] += 1;
                     for(Integer index: indexList ){
                         columnSet.add(index);
