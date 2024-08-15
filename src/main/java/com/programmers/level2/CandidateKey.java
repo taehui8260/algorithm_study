@@ -15,50 +15,50 @@ public class CandidateKey {
         }});
     }
     public int solution(String[][] relation) {
-        int[] answer = {0};
-        int columnSize = relation.length;
-        int rowSize = relation[0].length;
-        boolean[] except = new boolean[columnSize];
+        int columnSize = relation[0].length;
+        List<Set<Integer>> candidateKeys = new ArrayList<>();
 
-        for(int i=1; i<=columnSize; i++){
-            Set<Integer> columnSet = new HashSet<>();
+        // 모든 조합에 대해 검사
+        for (int i = 1; i < (1 << columnSize); i++) {
+            Set<Integer> keySet = new HashSet<>();
+            for (int j = 0; j < columnSize; j++) {
+                if ((i & (1 << j)) != 0) {
+                    keySet.add(j);
+                }
+            }
 
-            dfs(relation, except, 0, 1, i, columnSet, new ArrayList<>(), answer);
-            for(Integer item: columnSet){
-                except[item] = true;
+            // 최소성 체크
+            if (!isMinimal(keySet, candidateKeys)) continue;
+
+            // 유일성 체크
+            if (isUnique(relation, keySet)) {
+                candidateKeys.add(keySet);
             }
         }
-        return answer[0];
+
+        return candidateKeys.size();
     }
-    private void dfs(String[][] relation, boolean[] except, int start, int curSize , int maxSize, Set<Integer> columnSet, List<Integer> indexList, int[] answer){
-        if(start >= relation[0].length){return;}
-        if(!except[start]){
-            if(curSize == maxSize){
-                indexList.add(start);
-                Set<String> key = new HashSet<>();
-                for(int i=0; i<relation.length; i++){
-                    List<String> candidateKey = new ArrayList<>();
-                    for(Integer index: indexList) {
-                        candidateKey.add(relation[i][index]);
-                    }
-                    Collections.sort(candidateKey);
-                    key.add(candidateKey.stream().collect(Collectors.joining(", ")));
-                }
-                if(key.size() == relation.length){
-                    System.out.println(key);
-                    answer[0] += 1;
-                    for(Integer index: indexList ){
-                        columnSet.add(index);
-                    }
-                }
-                indexList.remove(indexList.size()-1);
-            }
-            else{
-                indexList.add(start);
-                dfs(relation, except, start + 1, curSize + 1, maxSize, columnSet, indexList, answer);
-                indexList.remove(indexList.size() - 1);
+
+    private boolean isMinimal(Set<Integer> keySet, List<Set<Integer>> candidateKeys) {
+        for (Set<Integer> candidateKey : candidateKeys) {
+            if (keySet.containsAll(candidateKey)) {
+                return false;
             }
         }
-        dfs(relation, except, start + 1, curSize, maxSize, columnSet, indexList, answer);
+        return true;
+    }
+
+    private boolean isUnique(String[][] relation, Set<Integer> keySet) {
+        Set<String> seen = new HashSet<>();
+        for (String[] row : relation) {
+            StringBuilder sb = new StringBuilder();
+            for (int key : keySet) {
+                sb.append(row[key]).append("|");
+            }
+            if (!seen.add(sb.toString())) {
+                return false;
+            }
+        }
+        return true;
     }
 }
