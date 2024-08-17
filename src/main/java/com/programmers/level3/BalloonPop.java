@@ -10,23 +10,19 @@ import java.util.PriorityQueue;
 public class BalloonPop {
     public int solution(int[] a) {
         int answer = 1;
-        Map<Integer, Boolean> moveBalloon = new HashMap<>();
-        int rightMin = Integer.MAX_VALUE;
-        PriorityQueue<Integer> que = new PriorityQueue<>();
-        for(int item: a){
-            moveBalloon.put(item, false);
-            que.add(item);
+        int leftMin = Integer.MAX_VALUE;
+        int [] rightMin = new int[a.length];
+        rightMin[a.length-1] = a[a.length-1];
+        for(int i=a.length-2; i>0; i--){
+            rightMin[i] = Math.min(a[i], rightMin[i+1]);
         }
+
         for(int i=0; i<a.length-1; i++){
-            moveBalloon.put(a[i], true);
-            while(moveBalloon.get(que.peek())){
-                que.poll();
-            }
-            if(a[i] < rightMin || a[i] < que.peek()){
+            if(a[i] < leftMin || a[i] < rightMin[i+1]){
                 answer++;
             }
-            if(a[i] < rightMin){
-                rightMin = a[i];
+            if(a[i] < leftMin){
+                leftMin = a[i];
             }
         }
         return answer;
