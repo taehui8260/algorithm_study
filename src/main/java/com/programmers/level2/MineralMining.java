@@ -47,13 +47,13 @@ public class MineralMining {
     //가중치 구하기
     private int getWeight(String mineral){
         switch (mineral) {
-            case "stone" -> {
+            case "stone":{
                 return 1;
             }
-            case "iron" -> {
+            case "iron": {
                 return 5;
             }
-            case "diamond" -> {
+            case "diamond": {
                 return 25;
             }
         }
