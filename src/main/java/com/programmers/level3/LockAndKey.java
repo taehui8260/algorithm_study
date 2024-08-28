@@ -53,17 +53,17 @@ public class LockAndKey {
             int lockEndX = 0;
 
             int keyStartY = keySize-1;
-            int keyEndY = 2*keySize-2;
+            int keyEndY = keySize + lockSize -2;
 
             int keyStartX = keySize-1;
-            int keyEndX = 2*keySize-2;
+            int keyEndX = keySize + lockSize -2;
 
-            for (int i = 0; i < 2 * keySize - 1; i++) {
+            for (int i = 0; i < keySize + lockSize - 1; i++) {
                 lockStartX = -(keySize - 1);
                 lockEndX = 0;
                 keyStartX = keySize - 1;
-                keyEndX = 2 * keySize - 2;
-                for (int j = 0; j < 2 * keySize - 1; j++) {
+                keyEndX = keySize + lockSize - 2;
+                for (int j = 0; j < keySize + lockSize - 1; j++) {
                     int result = 0;
 
                     Queue<Integer> lockQue = new LinkedList<>();
@@ -83,6 +83,7 @@ public class LockAndKey {
                         int curLock = lockQue.poll();
                         int curKey = keyQue.poll();
                         if (curLock == curKey) {
+                            result = -1;
                             break;
                         } else if (curLock == 0 && curKey == 1) {
                             result++;
