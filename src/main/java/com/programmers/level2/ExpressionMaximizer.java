@@ -1,12 +1,12 @@
 package com.programmers.level2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
+
+import java.util.*;
 
 /**
  * 수식 최대화
+ *
+ * 각 숫자와 수식을 list 형태로 변환 후 수식의 순서에 따라 값을 구해 최대값을 구한다.
  */
 public class ExpressionMaximizer {
     public static void main(String[] args) {
@@ -16,78 +16,77 @@ public class ExpressionMaximizer {
 
     public long solution(String expression) {
         long answer = 0;
-        String stringResult;
-        char [][]signAry = {
-                {'+', '-', '*'},
-                {'+', '*', '-'},
-                {'-', '+', '*'},
-                {'-', '*', '+'},
-                {'*', '-', '+'},
-                {'*', '+', '-'},
-        };
-        for(char [] item : signAry){
-            stringResult = expression;
-
-            for(char item_2: item){
-                System.out.println("### item_2: " +item_2);
-                System.out.println("### stringResult: " +stringResult);
-                stringResult = getExpression(stringResult, item_2);
-
-
+        List<Character> operation = new LinkedList<>();
+        List<String> expressionList = new LinkedList<>();
+        List<List<Character>> operationList = new ArrayList<>();
+        int startIndex = 0;
+        //list로 변환
+        for(int i=0; i<expression.length(); i++){
+            char curChart = expression.charAt(i);
+            if(curChart == '-' || curChart == '*' || curChart == '+'){
+                if(!operation.contains(curChart)){
+                    operation.add(curChart);
+                }
+                expressionList.add(expression.substring(startIndex, i));
+                expressionList.add(expression.substring(i, i+1));
+                startIndex = i + 1;
             }
-            answer = Math.max(answer, Long.parseLong(stringResult));
+            if(i == expression.length()-1){
+                expressionList.add(expression.substring(startIndex));
+            }
         }
-
+        setOperation(operation, new LinkedList<>(), new boolean[operation.size()], operation.size(), operationList);
+        for(List<Character> item: operationList){
+            List<String> vueExpressionList = new ArrayList<>();
+            for(String item_2: expressionList){
+                vueExpressionList.add(item_2);
+            }
+            long value = 0;
+            for(char item_2 : item) {
+                for (int i = 0; i <vueExpressionList.size();) {
+                    String cur = vueExpressionList.get(i);
+                    if(cur.equals(String.valueOf(item_2))){
+                        value = operating(vueExpressionList.get(i-1), vueExpressionList.get(i+1), cur);
+                        vueExpressionList.remove(i+1);
+                        vueExpressionList.remove(i);
+                        vueExpressionList.set(i-1, String.valueOf(value));
+                        continue;
+                    }
+                    i++;
+                }
+            }
+            answer = Math.max(answer, Math.abs(Long.parseLong(vueExpressionList.get(0))));
+        }
         return answer;
     }
 
-    private String getExpression(String expression, char sign){
-        System.out.println("### expression: " +expression);
-        System.out.println("### sign: " +sign);
-
-        String frontNum = "";
-        int frontNumSign = 0;
-        String backNum = "";
-        int backNumSign = 0;
-        int expressionLength = expression.length();
-        String result = "";
-        for(int i=0; i<expressionLength; i++){
-            if(expression.charAt(i) == sign){
-                for(int j=i-1; j>=0; j--){
-                    if(!Character.isDigit(expression.charAt(j)) || j==0){
-                        System.out.println("### expression.charAt(i): " + expression.charAt(j));
-                        frontNumSign = j == 0 ? j-1 : j;
-                        frontNum = expression.substring(frontNumSign+1, i);
-                        break;
-                    }
-                }
-                for(int j=i+1; j<expression.length(); j++){
-                    if(!Character.isDigit(expression.charAt(j)) || j == expression.length()-1){
-
-                        backNumSign = j == expression.length()-1 ? j+1 : j;
-                        backNum = expression.substring(i+1, backNumSign);
-                        break;
-                    }
-                }
-                System.out.println("### frontNum: " + frontNum);
-                System.out.println("### backNum: " + backNum);
-                expression = expression.substring(0,frontNumSign+1) + operating(frontNum, backNum, sign) + expression.substring(backNumSign);
-                break;
+    private void setOperation(List<Character> operation, List<Character> sum, boolean [] visited, int size, List<List<Character>> operationList){
+        if(size == sum.size()){
+            List<Character> curOperation = new LinkedList<>();
+            for(Character item: sum){
+                curOperation.add(item);
             }
-            if(i == expressionLength-1)
-                return expression;
+            operationList.add(curOperation);
+            return;
         }
-        expression = getExpression(expression, sign);
-        return expression;
+        for(int i=0; i<size; i++){
+            if(!visited[i]){
+                sum.add(operation.get(i));
+                visited[i] = true;
+                setOperation(operation, sum, visited, size, operationList);
+                visited[i] = false;
+                sum.remove(sum.size()-1);
+            }
+        }
     }
-    private int operating (String num1, String num2, char sign){
+    private long operating (String num1, String num2, String sign){
         switch (sign){
-            case '+':
-                return Integer.parseInt(num1) + Integer.parseInt(num2);
-            case '-':
-                return Integer.parseInt(num1) - Integer.parseInt(num2);
-            case '*':
-                return Integer.parseInt(num1) * Integer.parseInt(num2);
+            case "+":
+                return Long.parseLong(num1) + Long.parseLong(num2);
+            case "-":
+                return Long.parseLong(num1) - Long.parseLong(num2);
+            case "*":
+                return Long.parseLong(num1) * Long.parseLong(num2);
         }
         return 0;
     }
